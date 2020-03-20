@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_whatsapp/app_state.dart';
 import 'package:flutter_whatsapp/constants.dart';
+import 'package:flutter_whatsapp/tab_item.dart';
+import 'package:flutter_whatsapp/user_chat.dart';
+import 'package:flutter_whatsapp/user_settings.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -11,20 +19,28 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppConstants.appName,
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          color: Colors.grey[100],
-          brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
+    return MultiProvider(
+      providers: <SingleChildWidget>[
+        ChangeNotifierProvider(
+          create: (_) => AppState(),
         ),
-        primaryTextTheme: TextTheme(
-          title: TextStyle(color: Colors.black),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppConstants.appName,
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            color: Colors.grey[100],
+            brightness: Brightness.light,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
+          primaryTextTheme: TextTheme(
+            title: TextStyle(color: Colors.black),
+          ),
         ),
+        darkTheme: ThemeData.dark(),
+        home: BottomNavigatorView(),
       ),
-      home: BottomNavigatorView(),
     );
   }
 }
@@ -38,18 +54,15 @@ class _BottomNavigatorViewState extends State<BottomNavigatorView> {
   /// Indicates the current indexed navigation bar item.
   int currentIndex = 0;
 
-  /// The pages that is represented by each index.
-  final pages = [Scaffold(), Scaffold()];
-
   /// The [AppBar] titles represented by each index.
-  final pageTitles = ['Home', 'Settings'];
+  final List<TabItem> tabs = [
+    TabItem('Chat', Icons.chat, UserChat()),
+    TabItem('Settings', Icons.settings, UserSettings()),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(pageTitles[currentIndex]),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         // For styling purposes, you can have different selected
         // and unselected font sizes to emphasize the selected option.
@@ -58,6 +71,8 @@ class _BottomNavigatorViewState extends State<BottomNavigatorView> {
         // The current active index is represented by our
         // [currentIndex] variable.
         currentIndex: currentIndex,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         onTap: (int newIndex) {
           /// When an icon in the [BottomNavigationBar] is tapped,
           /// we want to change the current view to the new view
@@ -67,18 +82,18 @@ class _BottomNavigatorViewState extends State<BottomNavigatorView> {
             currentIndex = newIndex;
           });
         },
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            title: Text('Home'),
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            title: Text('Settings'),
-            icon: Icon(Icons.settings),
-          ),
-        ],
+        items: tabs
+            .map(
+              (TabItem tab) => BottomNavigationBarItem(
+                title: Text(tab.name),
+                icon: Icon(
+                  tab.icon,
+                ),
+              ),
+            )
+            .toList(),
       ),
-      body: Container(),
+      body: tabs[currentIndex].page,
     );
   }
 }

@@ -1,3 +1,3 @@
 class AppConstants {
-  static final appName = 'Whatsup';
+  static final String appName = 'Whatsup';
 }
