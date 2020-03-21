@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_whatsapp/app_state.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class UserChat extends StatelessWidget {
   @override
@@ -12,16 +14,52 @@ class UserChat extends StatelessWidget {
         appBar: AppBar(
           title: Text('Chat'),
         ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: ChatContent(),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: InputTextArea(),
-            ),
-          ],
+        body: Provider.of<AppState>(context).userEmail != null
+            ? Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ChatContent(),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: InputTextArea(),
+                  ),
+                ],
+              )
+            : UnsignedInState(),
+      ),
+    );
+  }
+}
+
+class UnsignedInState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height * 0.2,
+        ),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: <Widget>[
+              Icon(
+                Icons.close,
+                color: Colors.red,
+                size: MediaQuery.of(context).size.width * 0.4,
+              ),
+              Text(
+                'Sign in to view chat',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 26.0,
+                  height: 1.5,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
