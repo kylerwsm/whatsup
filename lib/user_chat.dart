@@ -30,7 +30,9 @@ class UserChat extends StatelessWidget {
 
 /// The widget showing the past list of messages.
 class ChatContent extends StatelessWidget {
-  final reference = Firestore.instance.collection('chats/main/messages').orderBy('dateCreated');
+  final reference = Firestore.instance
+      .collection('chats/main/messages')
+      .orderBy('dateCreated');
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +123,13 @@ class TextBubble extends StatelessWidget {
               children: <Widget>[
                 Text(text, style: TextStyle(fontSize: 18.0)),
                 Divider(),
-                Text(
-                  DateFormat('\'Created on\' dd MMM yy \'at\' HH:mm a').format(
-                    DateTime.fromMillisecondsSinceEpoch(timeStamp),
+                Opacity(
+                  opacity: 0.7,
+                  child: Text(
+                    DateFormat('\'Created on\' dd MMM yy \'at\' HH:mm a')
+                        .format(
+                      DateTime.fromMillisecondsSinceEpoch(timeStamp),
+                    ),
                   ),
                 ),
               ],
