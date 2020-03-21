@@ -99,6 +99,13 @@ class ChatContent extends StatelessWidget {
                         : const EdgeInsets.only(top: 0.0),
                     child: TextBubble(
                       snapshot.data.documents[index].data['content'],
+                      Firestore.instance
+                          .document(
+                              'chats/main/users/${snapshot.data.documents[index].data['author']}')
+                          .get()
+                          .then(
+                            (doc) => doc.data['name'],
+                          ),
                       snapshot.data.documents[index].data['dateCreated'],
                     ),
                   );
@@ -115,10 +122,11 @@ enum TextBubbleType { received, sent }
 
 class TextBubble extends StatelessWidget {
   final String text;
+  final Future<String> author;
   final int timeStamp;
   final TextBubbleType textBubbleType;
 
-  TextBubble(this.text, this.timeStamp,
+  TextBubble(this.text, this.author, this.timeStamp,
       [this.textBubbleType = TextBubbleType.received]);
 
   @override
@@ -159,6 +167,20 @@ class TextBubble extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Opacity(
+                  opacity: 0.7,
+                  child: FutureBuilder(
+                    future: author,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(snapshot.data);
+                      } else {
+                        return Text('Loading...');
+                      }
+                    },
+                  ),
+                ),
+                Divider(),
                 Text(text, style: TextStyle(fontSize: 18.0)),
                 Divider(),
                 Opacity(
