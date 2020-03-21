@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp/app_state.dart';
+import 'package:flutter_whatsapp/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,7 @@ class UserChat extends StatelessWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Chat'),
+          title: Text(AppConstants.appName),
         ),
         body: Provider.of<AppState>(context).userEmail != null
             ? Column(
