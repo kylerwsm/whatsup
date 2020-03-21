@@ -70,7 +70,7 @@ class UnsignedInState extends StatelessWidget {
 class ChatContent extends StatelessWidget {
   final reference = Firestore.instance
       .collection('chats/main/messages')
-      .orderBy('dateCreated');
+      .orderBy('dateCreated', descending: true);
 
   @override
   Widget build(BuildContext context) {
@@ -89,24 +89,29 @@ class ChatContent extends StatelessWidget {
             );
           default:
             return ListView.builder(
+              reverse: true,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (BuildContext context, int index) {
+                final String author =
+                    snapshot.data.documents[index].data['author'];
                 return Padding(
                   padding: index == 0
-                      ? const EdgeInsets.only(top: 8.0)
+                      ? const EdgeInsets.only(bottom: 8.0)
                       : index == snapshot.data.documents.length - 1
-                          ? const EdgeInsets.only(bottom: 8.0)
+                          ? const EdgeInsets.only(top: 8.0)
                           : const EdgeInsets.all(0.0),
                   child: TextBubble(
                     snapshot.data.documents[index].data['content'],
                     Firestore.instance
-                        .document(
-                            'chats/main/users/${snapshot.data.documents[index].data['author']}')
+                        .document('chats/main/users/$author')
                         .get()
                         .then(
                           (doc) => doc.data['name'],
                         ),
                     snapshot.data.documents[index].data['dateCreated'],
+                    Provider.of<AppState>(context, listen: false).uid == author
+                        ? TextBubbleType.sent
+                        : TextBubbleType.received,
                   ),
                 );
               },
@@ -135,7 +140,7 @@ class TextBubble extends StatelessWidget {
       case TextBubbleType.received:
         alignment = Alignment.centerLeft;
         break;
-      case TextBubbleType.received:
+      case TextBubbleType.sent:
         alignment = Alignment.centerRight;
         break;
       default:
@@ -236,12 +241,10 @@ class InputTextArea extends StatelessWidget {
             ),
             child: Icon(Icons.send),
             onPressed: () async {
-              print('Send button is pressed');
               final text = controller.text;
               controller.clear();
               await reference.document().setData({
-                'author':
-                    await Provider.of<AppState>(context, listen: false).uid,
+                'author': Provider.of<AppState>(context, listen: false).uid,
                 'content': text,
                 'dateCreated': DateTime.now().millisecondsSinceEpoch,
               });
