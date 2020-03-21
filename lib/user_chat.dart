@@ -74,46 +74,45 @@ class ChatContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: StreamBuilder<QuerySnapshot>(
-        stream: reference.snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              // When loading, do not show anything.
-              return Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: CircularProgressIndicator(),
-              );
-            default:
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: index == 0
-                        ? const EdgeInsets.only(top: 8.0)
-                        : const EdgeInsets.only(top: 0.0),
-                    child: TextBubble(
-                      snapshot.data.documents[index].data['content'],
-                      Firestore.instance
-                          .document(
-                              'chats/main/users/${snapshot.data.documents[index].data['author']}')
-                          .get()
-                          .then(
-                            (doc) => doc.data['name'],
-                          ),
-                      snapshot.data.documents[index].data['dateCreated'],
-                    ),
-                  );
-                },
-              );
-          }
-        },
-      ),
+    return StreamBuilder<QuerySnapshot>(
+      stream: reference.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            // When loading, do not show anything.
+            return Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: CircularProgressIndicator(),
+            );
+          default:
+            return ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: index == 0
+                      ? const EdgeInsets.only(top: 8.0)
+                      : index == snapshot.data.documents.length - 1
+                          ? const EdgeInsets.only(bottom: 8.0)
+                          : const EdgeInsets.all(0.0),
+                  child: TextBubble(
+                    snapshot.data.documents[index].data['content'],
+                    Firestore.instance
+                        .document(
+                            'chats/main/users/${snapshot.data.documents[index].data['author']}')
+                        .get()
+                        .then(
+                          (doc) => doc.data['name'],
+                        ),
+                    snapshot.data.documents[index].data['dateCreated'],
+                  ),
+                );
+              },
+            );
+        }
+      },
     );
   }
 }
