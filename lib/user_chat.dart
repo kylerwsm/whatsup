@@ -203,8 +203,12 @@ class TextBubble extends StatelessWidget {
 
 /// The widget where the user can type in the text message and send.
 class InputTextArea extends StatelessWidget {
+  final reference = Firestore.instance.collection('chats/main/messages');
+
   @override
   Widget build(BuildContext context) {
+    final controller = TextEditingController();
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
@@ -219,6 +223,7 @@ class InputTextArea extends StatelessWidget {
                   vertical: 8.0,
                 ),
                 child: TextField(
+                  controller: controller,
                   decoration: InputDecoration.collapsed(
                     hintText: 'Write a message...',
                   ),
@@ -231,8 +236,16 @@ class InputTextArea extends StatelessWidget {
               horizontal: 16.0,
             ),
             child: Icon(Icons.send),
-            onPressed: () {
+            onPressed: () async {
               print('Send button is pressed');
+              final text = controller.text;
+              controller.clear();
+              await reference.document().setData({
+                'author':
+                    await Provider.of<AppState>(context, listen: false).uid,
+                'content': text,
+                'dateCreated': DateTime.now().millisecondsSinceEpoch,
+              });
             },
           ),
         ],

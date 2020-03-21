@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +17,10 @@ class AppState extends ChangeNotifier {
   /// Our authentication related classes.
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  /// Our authentication getters.
+  Future<String> get uid async =>
+      await _firebaseAuth.currentUser().then((user) => user.uid);
 
   AppState() {
     // Fetch user information if there is a session.
