@@ -66,6 +66,8 @@ class _BottomNavigatorViewState extends State<BottomNavigatorView> {
         // and unselected font sizes to emphasize the selected option.
         unselectedFontSize: 12.0,
         selectedFontSize: 12.0,
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0.0,
         // The current active index is represented by our
         // [currentIndex] variable.
         currentIndex: currentIndex,
