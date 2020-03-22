@@ -87,6 +87,7 @@ class AppState extends ChangeNotifier {
   void signOut() async {
     // Signs user out of Firebase.
     await _firebaseAuth.signOut();
+    await _googleSignIn.signOut();
     // Update user variables.
     _userPhotoUrl = null;
     _userDisplayName = null;

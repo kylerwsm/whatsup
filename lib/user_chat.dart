@@ -159,9 +159,13 @@ class TextBubble extends StatelessWidget {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.7,
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).appBarTheme.color,
             borderRadius: BorderRadius.all(
               const Radius.circular(12.0),
+            ),
+            border: Border.all(
+              width: 0.3,
+              color: Theme.of(context).textTheme.body1.color.withOpacity(0.3),
             ),
           ),
           child: Padding(
@@ -216,7 +220,7 @@ class InputTextArea extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).appBarTheme.color,
       ),
       child: Row(
         children: <Widget>[

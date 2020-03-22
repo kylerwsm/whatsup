@@ -19,6 +19,7 @@ class UserSettings extends StatelessWidget {
         slivers: <Widget>[
           SliverAppBar(
             title: Text('User Settings'),
+            pinned: true,
           ),
           SliverToBoxAdapter(
             child: Column(
@@ -68,8 +69,7 @@ class UserSettings extends StatelessWidget {
                 SizedBox(height: 8.0),
                 // Shows the user's email.
                 Text(
-                  Provider.of<AppState>(context).userDisplayName ??
-                      'Not signed in',
+                  Provider.of<AppState>(context).userEmail ?? 'Not signed in',
                   style: TextStyle(
                     fontSize: 18.0,
                   ),
@@ -92,6 +92,7 @@ class UserSettings extends StatelessWidget {
                           child: Text(
                             'Sign in with Google',
                             style: TextStyle(
+                              color: Colors.white,
                               fontSize: 22.0,
                             ),
                           ),
@@ -114,6 +115,7 @@ class UserSettings extends StatelessWidget {
                           child: Text(
                             'Sign out',
                             style: TextStyle(
+                              color: Colors.white,
                               fontSize: 22.0,
                             ),
                           ),
