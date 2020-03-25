@@ -86,7 +86,7 @@ class ChatContent extends StatelessWidget {
             // When loading, do not show anything.
             return Padding(
               padding: const EdgeInsets.all(32.0),
-              child: CircularProgressIndicator(),
+              child: Text('Loading...'),
             );
           default:
             return ListView.builder(
