@@ -1,6 +1,6 @@
-# Flutter Whatsapp
+# Whatsup
 
-A new Flutter project.
+A simple and fully-functional messaging app built with just Flutter and Firebase.
 
 ## Getting Started
 
